@@ -64,6 +64,40 @@ test("get: Gets attributes if empty objects", function() {
 });
 
 
+test("get: Gets nested attribute values from nested Backbone Models", function() {
+	var model = create();
+	var addressModel = new Backbone.Model({
+		city: 'Oakland'
+		, state: 'California'
+		, street: {
+			number: '1428'
+			, name: 'Elm St'
+		}
+	});
+
+	model.set('address', addressModel);
+
+	equal(model.get('address') instanceof Backbone.Model, true);
+	deepEqual(model.get('address.city'), 'Oakland');
+	deepEqual(model.get('address.street.number'), '1428');
+});
+
+
+test("get: Gets nested models from a Backbone Collection", function() {
+	var model = create();
+	var petsCollection = new Backbone.Collection([
+		{type: 'cat', desc: {name: 'lucky', age: 13}}
+		, {type: 'dog', desc: {name: 'rusty', age: 99}}
+	]);
+
+	model.set('pets', petsCollection);
+
+	equal(model.get('pets') instanceof Backbone.Collection, true);
+	deepEqual(model.get('pets.1.type'), 'dog');
+	deepEqual(model.get('pets.1.desc.name'), 'rusty');
+});
+
+
 test("set: Sets nested values given a path", function() {
     var model = create();
 
@@ -137,6 +171,7 @@ test('set: Sets a single value - nested', function() {
    equal(model.attributes.user.type, 'Admin');
    equal(model.attributes.user.name.first, 'Foo');
 });
+
 
 test('set: Sets a single value inside null to create an object', function() {
    var model = create();
