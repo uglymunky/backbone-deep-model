@@ -52,7 +52,7 @@ function getNested(obj, path, return_exists) {
         }
 
 	    if (result instanceof Backbone.Model) {
-		    result = result.get([fields[i]]);
+		    result = Backbone.Model.prototype.get.call(result, fields[i]);
 	    } else if (result instanceof Backbone.Collection) {
 		    result = result.at(fields[i]);
 	    } else {
